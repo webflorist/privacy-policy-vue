@@ -32,8 +32,8 @@
 	"scripts": {
 		"lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
 		"lintfix:js": "yarn lint:js --fix",
-		"lint:prettier": "prettier --check .",
-		"lintfix:prettier": "prettier --write --list-different .",
+		"lint:prettier": "prettier --ignore-path ./.gitignore --check .",
+		"lintfix:prettier": "prettier --ignore-path ./.gitignore --write --list-different .",
 		"lint": "yarn lint:js && yarn lint:prettier",
 		"lintfix": "yarn lintfix:prettier && yarn lintfix:js"
 	},
