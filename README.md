@@ -7,25 +7,25 @@ This package contains a **Vue (v2/v3)** component providing an **open source** p
 
 ## Features
 
--   **Languages**  
-    Currently the package includes texts in **german** and **english** language.
+- **Languages**  
+  Currently the package includes texts in **german** and **english** language.
 
--   **Singular/Plural**  
-    You can choose between a singular or plural point of view.  
-    (e.g. `My website...` vs `Our website...`)
+- **Singular/Plural**  
+  You can choose between a singular or plural point of view.  
+  (e.g. `My website...` vs `Our website...`)
 
--   **Included Texts**
+- **Included Texts**
 
-    -   A general **intro text**
-    -   Listing of **GDPR rights**
-    -   General **data security** text (SSL, etc.)
-    -   **Cookies** information
-    -   Information on **data processing** of third party data processors:
-        -   Webserver
-        -   Web analytics
-        -   Interactive maps
-        -   Sending of emails (e.g. contact forms)
-    -   Disclaimer regarding **outgoing links**
+  - A general **intro text**
+  - Listing of **GDPR rights**
+  - General **data security** text (SSL, etc.)
+  - **Cookies** information
+  - Information on **data processing** of third party data processors:
+    - Webserver
+    - Web analytics
+    - Interactive maps
+    - Sending of emails (e.g. contact forms)
+  - Disclaimer regarding **outgoing links**
 
 ## Requirements
 

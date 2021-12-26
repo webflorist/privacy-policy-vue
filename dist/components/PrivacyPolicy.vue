@@ -77,9 +77,7 @@ export default {
 			privacy_email: this.privacyEmail,
 		}
 		const usedProcessors = {}
-		for (const [processType, process] of Object.entries(
-			this.dataProcessing
-		)) {
+		for (const [processType, process] of Object.entries(this.dataProcessing)) {
 			// Retrieve processor data from allProcessors
 			const processorKey = process.processor
 			const processor = this.allProcessors[processorKey]
@@ -99,10 +97,7 @@ export default {
 				usedProcessors[processorKey].purposes = []
 			}
 			usedProcessors[processorKey].purposes = [
-				...new Set([
-					...usedProcessors[processorKey].purposes,
-					processType,
-				]),
+				...new Set([...usedProcessors[processorKey].purposes, processType]),
 			]
 
 			// Add data categories to processor.
@@ -124,9 +119,7 @@ export default {
 			// When custom translation function is stated via prop translationFunction
 			if (this.translationFunction !== null) {
 				return (key) =>
-					renderText(
-						this.translationFunction(key, this.interpolations)
-					)
+					renderText(this.translationFunction(key, this.interpolations))
 			}
 
 			// When prop locale is stated
@@ -138,9 +131,7 @@ export default {
 				}
 
 				const accessNestedProp = (path, obj) => {
-					return path
-						.split('.')
-						.reduce((p, c) => (p && p[c]) || null, obj)
+					return path.split('.').reduce((p, c) => (p && p[c]) || null, obj)
 				}
 
 				const interpolate = (text) => {
@@ -154,18 +145,14 @@ export default {
 
 				return (key) =>
 					renderText(
-						interpolate(
-							accessNestedProp(key, this.messages[this.locale])
-						)
+						interpolate(accessNestedProp(key, this.messages[this.locale]))
 					)
 			}
 
 			// When vue-i18n is installed for Vue 2 or used with legacy mode
 			try {
 				const vueI18n = this.$i18n
-				for (const [locale, messages] of Object.entries(
-					this.messages
-				)) {
+				for (const [locale, messages] of Object.entries(this.messages)) {
 					vueI18n.mergeLocaleMessage(locale, messages)
 				}
 				return (key) => renderText(vueI18n.t(key, this.interpolations))
@@ -176,9 +163,7 @@ export default {
 			// When vue-i18n is installed for Vue 3 with composition API
 			try {
 				const vueI18n = this.$.appContext.app.__VUE_I18N__.global
-				for (const [locale, messages] of Object.entries(
-					this.messages
-				)) {
+				for (const [locale, messages] of Object.entries(this.messages)) {
 					vueI18n.mergeLocaleMessage(locale, messages)
 				}
 				return (key) => renderText(vueI18n.t(key, this.interpolations))
@@ -246,10 +231,7 @@ export default {
 
 			<slot name="cookies_start"></slot>
 
-			<p
-				v-if="cookies === false"
-				v-html="t('cookies.no_cookies_content.p1')"
-			/>
+			<p v-if="cookies === false" v-html="t('cookies.no_cookies_content.p1')" />
 			<template v-else>
 				<p v-html="t('cookies.content.p1')" />
 				<p v-html="t('cookies.content.p2')" />
@@ -283,18 +265,10 @@ export default {
 
 				<p v-html="t('data_processing.webserver.content.p1')" />
 				<ul>
-					<li
-						v-html="t('data_processing.webserver.content.ul1.li1')"
-					/>
-					<li
-						v-html="t('data_processing.webserver.content.ul1.li2')"
-					/>
-					<li
-						v-html="t('data_processing.webserver.content.ul1.li3')"
-					/>
-					<li
-						v-html="t('data_processing.webserver.content.ul1.li4')"
-					/>
+					<li v-html="t('data_processing.webserver.content.ul1.li1')" />
+					<li v-html="t('data_processing.webserver.content.ul1.li2')" />
+					<li v-html="t('data_processing.webserver.content.ul1.li3')" />
+					<li v-html="t('data_processing.webserver.content.ul1.li4')" />
 				</ul>
 				<p v-html="t('data_processing.webserver.content.p2')" />
 
@@ -357,10 +331,7 @@ export default {
 
 					<dt>{{ t('data_purpose.title') }}</dt>
 					<dd>
-						<div
-							v-for="(purpose, key) in processor.purposes"
-							:key="key"
-						>
+						<div v-for="(purpose, key) in processor.purposes" :key="key">
 							<a :href="'#process-' + purpose">{{
 								t('data_purpose.' + purpose)
 							}}</a>
@@ -373,11 +344,7 @@ export default {
 							v-for="(category, key) in processor.data_categories"
 							:key="key"
 						>
-							<template
-								v-if="
-									key > 0 &&
-									key < processor.data_categories.length
-								"
+							<template v-if="key > 0 && key < processor.data_categories.length"
 								>,
 							</template>
 							{{ t('data_category.' + category) }}
