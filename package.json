@@ -1,6 +1,6 @@
 {
 	"name": "@webflorist/privacy-policy-vue",
-	"description": "A Privacy Policy Component for Vue Applications",
+	"description": "A GDPR compliant privacy policy component for Vue applications in german and english",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/webflorist/privacy-policy-vue.git"
@@ -53,7 +53,18 @@
 		"@webflorist/privacy-policy-text": "^1.0.0"
 	},
 	"peerDependencies": {
-		"vue": "^3.0.0",
+		"vue": "^2.0.0 || ^3.0.0",
 		"vue-i18n": "^9.2.0-beta.23"
-	}
+	},
+	"peerDependenciesMeta": {
+		"vue-i18n": {
+			"optional": true
+		}
+	},
+	"publishConfig": {
+		"access": "public",
+		"scope": "@webflorist",
+		"registry": "https://registry.npmjs.org"
+	},
+	"version": "1.0.5"
 }

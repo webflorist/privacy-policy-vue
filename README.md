@@ -3,12 +3,12 @@
 [![composer version](https://poser.pugx.org/webflorist/privacy-policy-vue/v/stable)](https://packagist.org/packages/webflorist/privacy-policy-vue)
 [![npm version](https://img.shields.io/npm/v/@webflorist/privacy-policy-vue.svg)](https://www.npmjs.com/package/@webflorist/privacy-policy-vue)
 
-This package contains a **Vue3** component providing an **open source** privacy policy available in **german** and **english**.
+This package contains a **Vue (v2/v3)** component providing an **open source** privacy policy available in **german** and **english**.
 
 ## Features
 
 -   **Languages**  
-    Currently the package includes texts in **german** and **englich** language.
+    Currently the package includes texts in **german** and **english** language.
 
 -   **Singular/Plural**  
     You can choose between a singular or plural point of view.  

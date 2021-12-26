@@ -2,7 +2,6 @@
 	"recommendations": [
 		"johnsoncodehk.volar",
 		"esbenp.prettier-vscode",
-		"dbaeumer.vscode-eslint",
-		"lokalise.i18n-ally"
+		"dbaeumer.vscode-eslint"
 	]
 }
