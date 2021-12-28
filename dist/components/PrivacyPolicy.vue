@@ -353,9 +353,12 @@ export default {
 
 					<dt>{{ t('privacy_policy') }}</dt>
 					<dd>
-						<a :href="processor.privacy_policy" target="_blank">{{
-							processor.privacy_policy
-						}}</a>
+						<a
+							:href="processor.privacy_policy"
+							target="_blank"
+							rel="noopener nofollower"
+							>{{ processor.privacy_policy }}</a
+						>
 					</dd>
 				</dl>
 			</section>
