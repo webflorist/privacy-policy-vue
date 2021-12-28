@@ -826,6 +826,11 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
+mvdan-sh@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/mvdan-sh/-/mvdan-sh-0.5.0.tgz#fa76f611a103595ad0f04f5d18e582892c46e87c"
+  integrity sha512-UWbdl4LHd2fUnaEcOUFVWRdWGLkNoV12cKVIPiirYd8qM5VkCoCTXErlDubevrkEG7kGohvjRxAlTQmOqG80tw==
+
 nanoid@^3.1.30:
   version "3.1.30"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
@@ -907,6 +912,13 @@ prettier-linter-helpers@^1.0.0:
   integrity sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==
   dependencies:
     fast-diff "^1.1.2"
+
+prettier-plugin-sh@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-sh/-/prettier-plugin-sh-0.8.1.tgz#50698d95f2006c1b3eae570d430c3c1c05a31327"
+  integrity sha512-tz0g6y+ZaJF0PWaa1F7vhCv4nLgYYl2zYzYU4XJFD1McoY0oHI+l2osvXqv1s5yQdtjdlzKszN6VY7WTaw2Gqw==
+  dependencies:
+    mvdan-sh "^0.5.0"
 
 prettier@2.5.1:
   version "2.5.1"
