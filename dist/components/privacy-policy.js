@@ -7,7 +7,7 @@ import {
 import CookieDetails from './cookie-details.js'
 
 const PrivacyPolicy = {
-	name:'PrivacyPolicy',
+	name: 'PrivacyPolicy',
 	components: {
 		CookieDetails,
 	},
@@ -312,6 +312,6 @@ const PrivacyPolicy = {
 			<slot name="processor_list_end"></slot>
 		</section>
 	</section>	
-	`
+	`,
 }
-export { PrivacyPolicy };
+export { PrivacyPolicy }

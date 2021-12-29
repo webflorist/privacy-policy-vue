@@ -43,5 +43,5 @@ export default {
 			<dd v-html="t('cookies.duration.' + cookie.duration)" />
 		</dl>
 	</section>
-	`
+	`,
 }
