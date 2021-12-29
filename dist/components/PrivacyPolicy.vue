@@ -12,15 +12,9 @@ export default {
 		CookieDetails,
 	},
 	props: {
-		translationFunction: {
-			type: Function,
-			required: false,
-			default: null,
-		},
 		locale: {
 			type: String,
-			required: false,
-			default: null,
+			required: true,
 		},
 		singular: {
 			type: Boolean,
@@ -52,9 +46,6 @@ export default {
 	},
 	data() {
 		return {
-			t: () => {
-				return null
-			},
 			allProcessors: {},
 			messages: {},
 			interpolations: {},
@@ -62,9 +53,15 @@ export default {
 		}
 	},
 	created() {
+		// Get messages
 		this.messages = this.singular ? curlyWrapSingular : curlyWrapPlural
 
-		this.t = this.createTranslationFunction()
+		// Throw error, if stated locale is not supported.
+		if (!(this.locale in this.messages)) {
+			throw new Error(
+				`Package @webflorist/privacy-policy-vue does not support locale "${this.locale}"`
+			)
+		}
 
 		// Merge custom processors with default ones.
 		this.allProcessors = {
@@ -115,70 +112,21 @@ export default {
 		this.interpolations = interpolations
 	},
 	methods: {
-		createTranslationFunction() {
-			// When custom translation function is stated via prop translationFunction
-			if (this.translationFunction !== null) {
-				return (key) =>
-					renderText(this.translationFunction(key, this.interpolations))
-			}
-
-			// When prop locale is stated
-			if (this.locale !== null) {
-				if (!(this.locale in this.messages)) {
-					throw new Error(
-						`Package @webflorist/privacy-policy-vue does not support locale "${this.locale}"`
-					)
-				}
-
-				const accessNestedProp = (path, obj) => {
-					return path.split('.').reduce((p, c) => (p && p[c]) || null, obj)
-				}
-
-				const interpolate = (text) => {
-					for (const [replaceThis, withThis] of Object.entries(
-						this.interpolations
-					)) {
-						text = text.replaceAll(`{${replaceThis}}`, withThis)
-					}
-					return text
-				}
-
-				return (key) =>
-					renderText(
-						interpolate(accessNestedProp(key, this.messages[this.locale]))
-					)
-			}
-
-			// When vue-i18n is installed for Vue 2 or used with legacy mode
-			try {
-				const vueI18n = this.$i18n
-				for (const [locale, messages] of Object.entries(this.messages)) {
-					vueI18n.mergeLocaleMessage(locale, messages)
-				}
-				return (key) => renderText(vueI18n.t(key, this.interpolations))
-			} catch {
-				// Do nothing
-			}
-
-			// When vue-i18n is installed for Vue 3 with composition API
-			try {
-				const vueI18n = this.$.appContext.app.__VUE_I18N__.global
-				for (const [locale, messages] of Object.entries(this.messages)) {
-					vueI18n.mergeLocaleMessage(locale, messages)
-				}
-				return (key) => renderText(vueI18n.t(key, this.interpolations))
-			} catch {
-				// Do nothing
-			}
-
-			throw new Error(
-				'No translation strategy available.\n' +
-					'Do one of the following: \n' +
-					"- setup package 'intlify/vue-i18n-next' for automatic translation in Vue 2 \n" +
-					"- setup package 'kazupon/vue-i18n-next' for automatic translation in Vue 3 \n" +
-					"- state your desired language via prop 'locale' of component 'PrivacyPolicy' \n" +
-					"- state a custom translation function via prop 'translationFunction' of component 'PrivacyPolicy'"
+		t(key) {
+			return renderText(
+				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
 			)
+		},
+		interpolate(text) {
+			for (const [replaceThis, withThis] of Object.entries(
+				this.interpolations
+			)) {
+				text = text.replaceAll(`{${replaceThis}}`, withThis)
+			}
+			return text
+		},
+		accessNestedProp(path, obj) {
+			return path.split('.').reduce((p, c) => (p && p[c]) || null, obj)
 		},
 	},
 	computed: {
