@@ -4,12 +4,13 @@ import {
 	processors as defaultProcessors,
 	renderText,
 } from '@webflorist/privacy-policy-text'
+import { h } from 'vue'
 import CookieDetails from './cookie-details.js'
 
 const PrivacyPolicy = {
 	name: 'PrivacyPolicy',
 	components: {
-		CookieDetails,
+		CookieDetails
 	},
 	props: {
 		locale: {
@@ -134,184 +135,212 @@ const PrivacyPolicy = {
 			return Object.keys(this.cookies) || []
 		},
 	},
-	template: `
-	<section>
-		<p v-html="t('intro_content.p1')" />
-		<p v-html="t('intro_content.p2')" />
+	render(createElement) {
+		let e = h
+		let isVue3 = true
+		if(typeof createElement === 'function') {
+			e = createElement
+			isVue3 = false
+		}
+		const th = (key) => {
+			if (isVue3) {
+				return {innerHTML:this.t(key)}
+			}
+			return {domProps:{innerHTML:this.t(key)}}
+		}
+		const getProps = (props) => {
+			if (isVue3) {
+				return props
+			}
+			return {props:props}
+		}
+		const getAttrs = (attrs) => {
+			if (isVue3) {
+				return attrs
+			}
+			return {attrs:attrs}
+		}
+		const getSlot = (slot) => {
+			if (typeof this.$slots[slot] === 'function') {
+				return this.$slots[slot]()
+			}
+			if (typeof this.$slots[slot] === 'object') {
+				return this.$slots[slot]
+			}
+			return null
+		}
+		const getCookieContent = () => {
+			if (this.cookies === false) {
+				return e('p', th('cookies.no_cookies_content.p1'))
+			}
 
-		<slot name="after_intro"></slot>
+			const cookieSection = []
+			for(const cookieType of this.cookieTypes) {
 
-		<section>
-			<h2>{{ t('gdpr_rights.title') }}</h2>
+				const cookieDetails = []
+				for(const cookie of this.cookies[cookieType]) {
+					cookieDetails.push(
+						e(CookieDetails,getProps({cookie: cookie, t: th, processors: this.usedProcessors, type:cookieType}))
+					)
+				}
 
-			<slot name="gdpr_rights_start"></slot>
+				cookieSection.push(e('section',[
+					e('h3',th('cookies.' + cookieType + '.title')),
+					e('p',th('cookies.' + cookieType + '.content.p1')),
+					cookieDetails
+				]))
+			}
 
-			<p v-html="t('gdpr_rights.content.p1')" />
-			<ul>
-				<li v-html="t('gdpr_rights.content.ul1.li1')" />
-				<li v-html="t('gdpr_rights.content.ul1.li2')" />
-				<li v-html="t('gdpr_rights.content.ul1.li3')" />
-				<li v-html="t('gdpr_rights.content.ul1.li4')" />
-				<li v-html="t('gdpr_rights.content.ul1.li5')" />
-				<li v-html="t('gdpr_rights.content.ul1.li6')" />
-				<li v-html="t('gdpr_rights.content.ul1.li7')" />
-			</ul>
-			<p v-html="t('gdpr_rights.content.p2')" />
 
-			<slot name="gdpr_rights_end"></slot>
-		</section>
+			return [
+				e('p',th('cookies.content.p1')),
+				e('p',th('cookies.content.p2')),
+				e('p',th('cookies.content.p3')),
+				cookieSection
+			]
+		}
+		const getProcessorList = () => {
+			const processorList = []
 
-		<section>
-			<h2>{{ t('security.title') }}</h2>
+			const renderDataPurposes = (purposes) => {
+				const dataPurposes = []
+				for(const purpose of purposes) {
+					dataPurposes.push(
+						e('div', [
+							e('a', getAttrs({href:'#process-'+purpose}), [
+								this.t('data_purpose.'+purpose)
+							])
+						])
+					)
+				}
+				return dataPurposes
+			}
+			const renderDataCategories = (categories) => {
+				const dataCategories = []
+				for(const key in categories) {
+					if (key > 0 && key < categories.length) {
+						dataCategories.push(', ')
+					}
+					dataCategories.push(
+						e('span', [
+							this.t('data_category.'+categories[key])
+						])
+					)
+				}
+				return dataCategories
+			}
+			for (const [key,processor] of Object.entries(this.usedProcessors)) {
+				processorList.push(
+					e('section',getAttrs({id:'processor-'+key}),[
+						e('h3',processor.name),
+						e('dl',[
+							e('dt',th('address')),
+							e('dd',processor.address),
+							e('dt',th('data_purpose.title')),
+							e('dd',renderDataPurposes(processor.purposes)),
+							e('dt',th('data_category.title')),
+							e('dd',renderDataCategories(processor.data_categories)),
+							e('dt',th('privacy_policy')),
+							e('dd',[
+								e('a',getAttrs({href:processor.privacy_policy, target:'_blank',rel:'noopener nofollower'}),[
+									processor.privacy_policy
+								])
+							])
+						])
+					])
+				)
+			}
+			return processorList
+		}
+		return e('section',[
+			e('p',th('intro_content.p1')),
+			e('p',th('intro_content.p2')),
+			getSlot('after_intro'),
+			e('section',[
+				e('h2',th('gdpr_rights.title')),
+				getSlot('gdpr_rights_start'),
+				e('p',th('gdpr_rights.content.p1')),
+				e('ul',[
+					e('li', th('gdpr_rights.content.ul1.li1')),
+					e('li', th('gdpr_rights.content.ul1.li2')),
+					e('li', th('gdpr_rights.content.ul1.li3')),
+					e('li', th('gdpr_rights.content.ul1.li4')),
+					e('li', th('gdpr_rights.content.ul1.li5')),
+					e('li', th('gdpr_rights.content.ul1.li6')),
+					e('li', th('gdpr_rights.content.ul1.li7')),
+				]),				
+				e('p',th('gdpr_rights.content.p2')),
+				getSlot('gdpr_rights_end')
+			]),
+			e('section',[
+				e('h2',th('security.title')),
+				getSlot('security_start'),
+				e('p',th('security.content.p1')),
+				e('p',th('security.content.p2')),
+				getSlot('security_end'),
+			]),
+			e('section',[
+				e('h2',th('cookies.title')),
+				getCookieContent(),
+				getSlot('cookies_end'),
+			]),
+			Object.entries(this.dataProcessing).length > 0 ?
+				e('section', [
+					e('h2',th('data_processing.title')),
+					getSlot('data_processing_start'),
+					this.dataProcessing.webserver ?
+						e('section',getAttrs({id:'process-webserver'}),[
+							e('h3',th('data_processing.webserver.title')),
+							getSlot('data_processing_webserver_start'),
+							e('p',th('data_processing.webserver.content.p1')),
+							e('ul', [
+								e('li',th('data_processing.webserver.content.ul1.li1')),
+								e('li',th('data_processing.webserver.content.ul1.li2')),
+								e('li',th('data_processing.webserver.content.ul1.li3')),
+								e('li',th('data_processing.webserver.content.ul1.li4'))
+							]),
+							e('p',th('data_processing.webserver.content.p2')),
+							getSlot('data_processing_webserver_end'),
+						])
+						: null,
+					this.dataProcessing.analytics ?
+						e('section',getAttrs({id:'process-analytics'}),[
+							e('h3',th('data_processing.analytics.title')),
+							getSlot('data_processing_analytics_start'),
+							e('p',th('data_processing.analytics.content.p1')),
+							e('p',th('data_processing.analytics.content.p2')),
+							getSlot('data_processing_analytics_end'),
+						])
+						: null,
+					this.dataProcessing.maps ?
+						e('section',getAttrs({id:'process-maps'}),[
+							e('h3',th('data_processing.maps.title')),
+							getSlot('data_processing_maps_start'),
+							e('p',th('data_processing.maps.content.p1')),
+							e('p',th('data_processing.maps.content.p2')),
+							e('p',th('data_processing.maps.content.p3')),
+							getSlot('data_processing_maps_end'),
+						])
+						: null,
+					this.dataProcessing.send_emails ?
+						e('section',getAttrs({id:'process-send_emails'}),[
+							e('h3',th('data_processing.send_emails.title')),
+							getSlot('data_processing_send_emails_start'),
+							e('p',th('data_processing.send_emails.content.p1')),
+							getSlot('data_processing_send_emails_end'),
+						])
+						: null,					
+					getSlot('data_processing_end'),
+				])
+				: null,
+			e('section',[
+				e('h2',th('processor_list')),
+				getSlot('processor_list_start'),
+				getProcessorList(),
+				getSlot('processor_list_end'),
+			])
 
-			<slot name="security_start"></slot>
-
-			<p v-html="t('security.content.p1')" />
-			<p v-html="t('security.content.p2')" />
-
-			<slot name="security_end"></slot>
-		</section>
-
-		<section>
-			<h2>{{ t('cookies.title') }}</h2>
-
-			<slot name="cookies_start"></slot>
-
-			<p v-if="cookies === false" v-html="t('cookies.no_cookies_content.p1')" />
-			<template v-else>
-				<p v-html="t('cookies.content.p1')" />
-				<p v-html="t('cookies.content.p2')" />
-				<p v-html="t('cookies.content.p3')" />
-				<section v-for="cookieType of cookieTypes" :key="cookieType">
-					<h3>{{ t('cookies.' + cookieType + '.title') }}</h3>
-					<p v-html="t('cookies.' + cookieType + '.content.p1')" />
-					<CookieDetails
-						v-for="(cookie, key) of cookies[cookieType]"
-						:key="key"
-						:cookie="cookie"
-						:t="t"
-						:processors="usedProcessors"
-						:type="cookieType"
-					/>
-				</section>
-			</template>
-
-			<slot name="cookies_end"></slot>
-		</section>
-
-		<section v-if="Object.entries(dataProcessing).length > 0">
-			<h2>{{ t('data_processing.title') }}</h2>
-
-			<slot name="data_processing_start"></slot>
-
-			<section v-if="dataProcessing.webserver" id="process-webserver">
-				<h3>{{ t('data_processing.webserver.title') }}</h3>
-
-				<slot name="data_processing_webserver_start"></slot>
-
-				<p v-html="t('data_processing.webserver.content.p1')" />
-				<ul>
-					<li v-html="t('data_processing.webserver.content.ul1.li1')" />
-					<li v-html="t('data_processing.webserver.content.ul1.li2')" />
-					<li v-html="t('data_processing.webserver.content.ul1.li3')" />
-					<li v-html="t('data_processing.webserver.content.ul1.li4')" />
-				</ul>
-				<p v-html="t('data_processing.webserver.content.p2')" />
-
-				<slot name="data_processing_webserver_end"></slot>
-			</section>
-
-			<section v-if="dataProcessing.analytics" id="process-analytics">
-				<h3>{{ t('data_processing.analytics.title') }}</h3>
-
-				<slot name="data_processing_analytics_start"></slot>
-
-				<p v-html="t('data_processing.analytics.content.p1')" />
-				<p v-html="t('data_processing.analytics.content.p2')" />
-
-				<slot name="data_processing_analytics_end"></slot>
-			</section>
-
-			<section v-if="dataProcessing.maps" id="process-maps">
-				<h3>{{ t('data_processing.maps.title') }}</h3>
-				<slot name="data_processing_maps_start"></slot>
-				<p v-html="t('data_processing.maps.content.p1')" />
-				<p v-html="t('data_processing.maps.content.p2')" />
-				<p v-html="t('data_processing.maps.content.p3')" />
-				<slot name="data_processing_maps_end"></slot>
-			</section>
-
-			<section v-if="dataProcessing.send_emails" id="process-send_emails">
-				<h3>{{ t('data_processing.send_emails.title') }}</h3>
-				<slot name="data_processing_send_emails_start"></slot>
-				<p v-html="t('data_processing.send_emails.content.p1')" />
-				<slot name="data_processing_send_emails_end"></slot>
-			</section>
-
-			<slot name="data_processing_end"></slot>
-		</section>
-
-		<section>
-			<h2>{{ t('outgoing_links.title') }}</h2>
-			<slot name="outgoing_links_start"></slot>
-			<section v-html="t('outgoing_links.content.p1')" />
-			<slot name="outgoing_links_end"></slot>
-		</section>
-
-		<section>
-			<h2>{{ t('processor_list') }}</h2>
-
-			<slot name="processor_list_start"></slot>
-
-			<section
-				v-for="(processor, key) in usedProcessors"
-				:key="key"
-				:id="'processor-' + key"
-			>
-				<h3>{{ processor.name }}</h3>
-				<dl>
-					<dt>{{ t('address') }}</dt>
-					<dd>
-						{{ processor.address }}
-					</dd>
-
-					<dt>{{ t('data_purpose.title') }}</dt>
-					<dd>
-						<div v-for="(purpose, key) in processor.purposes" :key="key">
-							<a :href="'#process-' + purpose">{{
-								t('data_purpose.' + purpose)
-							}}</a>
-						</div>
-					</dd>
-
-					<dt>{{ t('data_category.title') }}</dt>
-					<dd>
-						<span
-							v-for="(category, key) in processor.data_categories"
-							:key="key"
-						>
-							<template v-if="key > 0 && key < processor.data_categories.length"
-								>,
-							</template>
-							{{ t('data_category.' + category) }}
-						</span>
-					</dd>
-
-					<dt>{{ t('privacy_policy') }}</dt>
-					<dd>
-						<a
-							:href="processor.privacy_policy"
-							target="_blank"
-							rel="noopener nofollower"
-							>{{ processor.privacy_policy }}</a
-						>
-					</dd>
-				</dl>
-			</section>
-
-			<slot name="processor_list_end"></slot>
-		</section>
-	</section>	
-	`,
+		])
+	  },
 }
 export { PrivacyPolicy }

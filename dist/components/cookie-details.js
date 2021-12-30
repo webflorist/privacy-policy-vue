@@ -1,3 +1,4 @@
+import { h } from 'vue'
 export default {
 	props: {
 		cookie: {
@@ -17,31 +18,40 @@ export default {
 			required: true,
 		},
 	},
-	template: `
-	<section>
-		<h4>{{ cookie.name }}</h4>
-
-		<dl>
-			<dt>{{ t('cookies.purpose.title') }}</dt>
-			<dd v-html="t('cookies.purpose.' + cookie.purpose)" />
-
-			<template v-if="type === 'third_party'">
-				<dt>{{ t('cookies.origin') }}</dt>
-				<dd>
-					{{ cookie.service }}
-					(<a :href="'#processor-' + cookie.processor">{{
-						processors[cookie.processor].name
-					}}</a
-					>)
-				</dd>
-			</template>
-
-			<dt>{{ t('cookies.written_on.title') }}</dt>
-			<dd v-html="t('cookies.written_on.' + cookie.written_on)" />
-
-			<dt>{{ t('cookies.duration.title') }}</dt>
-			<dd v-html="t('cookies.duration.' + cookie.duration)" />
-		</dl>
-	</section>
-	`,
+	render(createElement) {
+		let e = h
+		let isVue3 = true
+		if(typeof createElement === 'function') {
+			e = createElement
+			isVue3 = false
+		}
+		const getAttrs = (attrs) => {
+			if (isVue3) {
+				return attrs
+			}
+			return {attrs:attrs}
+		}
+		return e('section',[
+			e('h4',this.cookie.name),
+			e('dl', [
+				e('dt',this.t('cookies.purpose.title')),
+				e('dd',this.t('cookies.purpose.' + this.cookie.purpose)),
+				this.type === 'third_party' ? 
+					[
+						e('dt',this.t('cookies.origin')),
+						e('dd',[
+							this.cookie.service,
+							' (',
+							e('a',getAttrs({href:'#processor-' + this.cookie.processor}),this.processors[this.cookie.processor].name),
+							')' 
+						]),						
+					]
+					: null,
+				e('dt',this.t('cookies.written_on.title')),
+				e('dd',this.t('cookies.written_on.' + this.cookie.written_on)),
+				e('dt',this.t('cookies.duration.title')),
+				e('dd',this.t('cookies.duration.' + this.cookie.duration)),
+			])
+		])
+	},
 }
