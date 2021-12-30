@@ -79,9 +79,32 @@ new_version=${version_array[0]}.${version_array[1]}.${version_array[2]}
 echo $new_version
 
 echo
+echo "========="
+echo "Changelog"
+echo "========="
+changelog=$(git log --pretty="- %s (%h)" v${old_version}...)
+if [[ $? > 0 ]]; then exit 1; fi
+echo "$changelog"
+
+echo
 read -p "Do you want to release this version? (y/n)" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
+
+	echo
+	echo "=========================="
+	echo "Prepending to CHANGELOG.md"
+	echo "=========================="
+	changelog_header="# Release Notes"
+	printf -v date '%(%Y-%m-%d)T' -1
+	sed -i "s/${changelog_header}//" CHANGELOG.md
+	new_changelog=$changelog_header
+	new_changelog+=$'\n\n'
+	new_changelog+="## [v${new_version} (${date})](https://github.com/webflorist/privacy-policy-text/compare/v${old_version}...v${new_version})"
+	new_changelog+=$'\n\n'
+	new_changelog+=$changelog
+	new_changelog+=$(cat CHANGELOG.md)
+	echo "$new_changelog" > CHANGELOG.md
 
 	echo
 	echo "==============================="
@@ -104,7 +127,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	echo "=================="
 	echo "Committing changes"
 	echo "=================="
-	git commit -a -m "PREPARE new release ${new_version}"
+	git commit -a -m "RELEASE ${new_version}"
 	if [[ $? > 0 ]]; then exit 1; fi
 
 	echo
