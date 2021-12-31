@@ -208,37 +208,61 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 				this.dataProcessing
 			)) {
 				// Retrieve processor data from allProcessors
-				const processorKey = process.processor
-				const processor = this.allProcessors[processorKey]
+
+				const processors = Array.isArray(process.processor)
+					? process.processor
+					: [process.processor]
 
 				// Create interpolations for translation of texts.
-				interpolations[processType + '_processor_id'] = processorKey
-				interpolations[processType + '_processor_name'] = processor.name
-				interpolations[processType + '_service'] = process.service
+				const processorLinks = []
+				for (const processorKey of processors) {
+					if (!this.allProcessors[processorKey]) {
+						throw new Error(
+							`@webflorist/privacy-policy-vue: Processor "${processorKey}" used for data-processing "${processType}" not found in processor-list. Please state processor details via the "processors" property.`
+						)
+					}
+					const processorName = this.allProcessors[processorKey].name
+					processorLinks.push(
+						'<a href="#processor-' +
+							processorKey +
+							'">' +
+							processorName +
+							'</a>'
+					)
+				}
+				interpolations[processType + '_processor'] = processorLinks.join(', ')
+				interpolations[processType + '_service'] =
+					process.service || this.t('data_processing.' + processType + '.title')
 
-				// Put processor in usedProcessors
-				if (!usedProcessors[processorKey]) {
-					usedProcessors[processorKey] = processor
+				if (process.service) {
+					interpolations[processType + '_service'] = process.service
 				}
 
-				// Add data purpose to processor.
-				if (!usedProcessors[processorKey].purposes) {
-					usedProcessors[processorKey].purposes = []
-				}
-				usedProcessors[processorKey].purposes = [
-					...new Set([...usedProcessors[processorKey].purposes, processType]),
-				]
+				// Put processors in usedProcessors
+				for (const processorKey of processors) {
+					if (!usedProcessors[processorKey]) {
+						usedProcessors[processorKey] = this.allProcessors[processorKey]
+					}
 
-				// Add data categories to processor.
-				if (!usedProcessors[processorKey].data_categories) {
-					usedProcessors[processorKey].data_categories = []
+					// Add data purpose to processor.
+					if (!usedProcessors[processorKey].purposes) {
+						usedProcessors[processorKey].purposes = []
+					}
+					usedProcessors[processorKey].purposes = [
+						...new Set([...usedProcessors[processorKey].purposes, processType]),
+					]
+
+					// Add data categories to processor.
+					if (!usedProcessors[processorKey].data_categories) {
+						usedProcessors[processorKey].data_categories = []
+					}
+					usedProcessors[processorKey].data_categories = [
+						...new Set([
+							...usedProcessors[processorKey].data_categories,
+							...process.data_categories,
+						]),
+					]
 				}
-				usedProcessors[processorKey].data_categories = [
-					...new Set([
-						...usedProcessors[processorKey].data_categories,
-						...process.data_categories,
-					]),
-				]
 			}
 			this.usedProcessors = usedProcessors
 			this.interpolations = interpolations
@@ -291,7 +315,7 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 	const _hoisted_19 = { key: 0 }
 	const _hoisted_20 = {
 		key: 0,
-		id: 'process-webserver',
+		id: 'process-webhosting',
 	}
 	const _hoisted_21 = ['innerHTML']
 	const _hoisted_22 = ['innerHTML']
@@ -595,26 +619,26 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 								1 /* TEXT */
 							),
 							vue.renderSlot(_ctx.$slots, 'data_processing_start'),
-							$props.dataProcessing.webserver
+							$props.dataProcessing.webhosting
 								? (vue.openBlock(),
 								  vue.createElementBlock('section', _hoisted_20, [
 										vue.createElementVNode(
 											'h3',
 											null,
 											vue.toDisplayString(
-												$options.t('data_processing.webserver.title')
+												$options.t('data_processing.webhosting.title')
 											),
 											1 /* TEXT */
 										),
 										vue.renderSlot(
 											_ctx.$slots,
-											'data_processing_webserver_start'
+											'data_processing_webhosting_start'
 										),
 										vue.createElementVNode(
 											'p',
 											{
 												innerHTML: $options.t(
-													'data_processing.webserver.content.p1'
+													'data_processing.webhosting.content.p1'
 												),
 											},
 											null,
@@ -626,7 +650,7 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 												'li',
 												{
 													innerHTML: $options.t(
-														'data_processing.webserver.content.ul1.li1'
+														'data_processing.webhosting.content.ul1.li1'
 													),
 												},
 												null,
@@ -637,7 +661,7 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 												'li',
 												{
 													innerHTML: $options.t(
-														'data_processing.webserver.content.ul1.li2'
+														'data_processing.webhosting.content.ul1.li2'
 													),
 												},
 												null,
@@ -648,7 +672,7 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 												'li',
 												{
 													innerHTML: $options.t(
-														'data_processing.webserver.content.ul1.li3'
+														'data_processing.webhosting.content.ul1.li3'
 													),
 												},
 												null,
@@ -659,7 +683,7 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 												'li',
 												{
 													innerHTML: $options.t(
-														'data_processing.webserver.content.ul1.li4'
+														'data_processing.webhosting.content.ul1.li4'
 													),
 												},
 												null,
@@ -671,7 +695,7 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 											'p',
 											{
 												innerHTML: $options.t(
-													'data_processing.webserver.content.p2'
+													'data_processing.webhosting.content.p2'
 												),
 											},
 											null,
@@ -680,7 +704,7 @@ this['@webflorist/privacy-policy-vue']['privacy-policy'] = (function (
 										),
 										vue.renderSlot(
 											_ctx.$slots,
-											'data_processing_webserver_end'
+											'data_processing_webhosting_end'
 										),
 								  ]))
 								: vue.createCommentVNode('v-if', true),

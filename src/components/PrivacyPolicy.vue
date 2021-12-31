@@ -68,21 +68,21 @@
 
 			<slot name="data_processing_start"></slot>
 
-			<section v-if="dataProcessing.webserver" id="process-webserver">
-				<h3>{{ t('data_processing.webserver.title') }}</h3>
+			<section v-if="dataProcessing.webhosting" id="process-webhosting">
+				<h3>{{ t('data_processing.webhosting.title') }}</h3>
 
-				<slot name="data_processing_webserver_start"></slot>
+				<slot name="data_processing_webhosting_start"></slot>
 
-				<p v-html="t('data_processing.webserver.content.p1')" />
+				<p v-html="t('data_processing.webhosting.content.p1')" />
 				<ul>
-					<li v-html="t('data_processing.webserver.content.ul1.li1')" />
-					<li v-html="t('data_processing.webserver.content.ul1.li2')" />
-					<li v-html="t('data_processing.webserver.content.ul1.li3')" />
-					<li v-html="t('data_processing.webserver.content.ul1.li4')" />
+					<li v-html="t('data_processing.webhosting.content.ul1.li1')" />
+					<li v-html="t('data_processing.webhosting.content.ul1.li2')" />
+					<li v-html="t('data_processing.webhosting.content.ul1.li3')" />
+					<li v-html="t('data_processing.webhosting.content.ul1.li4')" />
 				</ul>
-				<p v-html="t('data_processing.webserver.content.p2')" />
+				<p v-html="t('data_processing.webhosting.content.p2')" />
 
-				<slot name="data_processing_webserver_end"></slot>
+				<slot name="data_processing_webhosting_end"></slot>
 			</section>
 
 			<section v-if="dataProcessing.analytics" id="process-analytics">
@@ -256,37 +256,57 @@ export default {
 		const usedProcessors = {}
 		for (const [processType, process] of Object.entries(this.dataProcessing)) {
 			// Retrieve processor data from allProcessors
-			const processorKey = process.processor
-			const processor = this.allProcessors[processorKey]
+
+			const processors = Array.isArray(process.processor)
+				? process.processor
+				: [process.processor]
 
 			// Create interpolations for translation of texts.
-			interpolations[processType + '_processor_id'] = processorKey
-			interpolations[processType + '_processor_name'] = processor.name
-			interpolations[processType + '_service'] = process.service
+			const processorLinks = []
+			for (const processorKey of processors) {
+				if (!this.allProcessors[processorKey]) {
+					throw new Error(
+						`@webflorist/privacy-policy-vue: Processor "${processorKey}" used for data-processing "${processType}" not found in processor-list. Please state processor details via the "processors" property.`
+					)
+				}
+				const processorName = this.allProcessors[processorKey].name
+				processorLinks.push(
+					'<a href="#processor-' + processorKey + '">' + processorName + '</a>'
+				)
+			}
+			interpolations[processType + '_processor'] = processorLinks.join(', ')
+			interpolations[processType + '_service'] =
+				process.service || this.t('data_processing.' + processType + '.title')
 
-			// Put processor in usedProcessors
-			if (!usedProcessors[processorKey]) {
-				usedProcessors[processorKey] = processor
+			if (process.service) {
+				interpolations[processType + '_service'] = process.service
 			}
 
-			// Add data purpose to processor.
-			if (!usedProcessors[processorKey].purposes) {
-				usedProcessors[processorKey].purposes = []
-			}
-			usedProcessors[processorKey].purposes = [
-				...new Set([...usedProcessors[processorKey].purposes, processType]),
-			]
+			// Put processors in usedProcessors
+			for (const processorKey of processors) {
+				if (!usedProcessors[processorKey]) {
+					usedProcessors[processorKey] = this.allProcessors[processorKey]
+				}
 
-			// Add data categories to processor.
-			if (!usedProcessors[processorKey].data_categories) {
-				usedProcessors[processorKey].data_categories = []
+				// Add data purpose to processor.
+				if (!usedProcessors[processorKey].purposes) {
+					usedProcessors[processorKey].purposes = []
+				}
+				usedProcessors[processorKey].purposes = [
+					...new Set([...usedProcessors[processorKey].purposes, processType]),
+				]
+
+				// Add data categories to processor.
+				if (!usedProcessors[processorKey].data_categories) {
+					usedProcessors[processorKey].data_categories = []
+				}
+				usedProcessors[processorKey].data_categories = [
+					...new Set([
+						...usedProcessors[processorKey].data_categories,
+						...process.data_categories,
+					]),
+				]
 			}
-			usedProcessors[processorKey].data_categories = [
-				...new Set([
-					...usedProcessors[processorKey].data_categories,
-					...process.data_categories,
-				]),
-			]
 		}
 		this.usedProcessors = usedProcessors
 		this.interpolations = interpolations

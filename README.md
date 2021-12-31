@@ -21,7 +21,7 @@ This package contains a **Vue (v2/v3)** component providing an **open source** p
   - General **data security** text (SSL, etc.)
   - **Cookies** information
   - Information on **data processing** of third party data processors:
-    - Webserver
+    - Webhosting
     - Web analytics
     - Interactive maps
     - Sending of emails (e.g. contact forms)
@@ -47,8 +47,8 @@ The `PrivacyPolicy` component provides the following named slots to insert custo
 | cookies_start                     | `<template #cookies_start> Custom Text </template>`                     |
 | cookies_end                       | `<template #cookies_end> Custom Text </template>`                       |
 | data_processing_start             | `<template #data_processing_start> Custom Text </template>`             |
-| data_processing_webserver_start   | `<template #data_processing_webserver_start> Custom Text </template>`   |
-| data_processing_webserver_end     | `<template #data_processing_webserver_end> Custom Text </template>`     |
+| data_processing_webhosting_start  | `<template #data_processing_webhosting_start> Custom Text </template>`  |
+| data_processing_webhosting_end    | `<template #data_processing_webhosting_end> Custom Text </template>`    |
 | data_processing_analytics_start   | `<template #data_processing_analytics_start> Custom Text </template>`   |
 | data_processing_analytics_end     | `<template #data_processing_analytics_end> Custom Text </template>`     |
 | data_processing_maps_start        | `<template #data_processing_maps_start> Custom Text </template>`        |
