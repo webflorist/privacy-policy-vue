@@ -1,9 +1,4 @@
-import {
-	curlyWrapSingular,
-	curlyWrapPlural,
-	processors,
-	renderText,
-} from '@webflorist/privacy-policy-text'
+import PrivacyPolicyText from '@webflorist/privacy-policy-text'
 import {
 	openBlock,
 	createElementBlock,
@@ -194,7 +189,9 @@ var script = {
 	},
 	created() {
 		// Get messages
-		this.messages = this.singular ? curlyWrapSingular : curlyWrapPlural
+		this.messages = this.singular
+			? PrivacyPolicyText.curlyWrapSingular
+			: PrivacyPolicyText.curlyWrapPlural
 
 		// Throw error, if stated locale is not supported.
 		if (!(this.locale in this.messages)) {
@@ -205,7 +202,7 @@ var script = {
 
 		// Merge custom processors with default ones.
 		this.allProcessors = {
-			...processors,
+			...PrivacyPolicyText.processors,
 			...this.processors,
 		}
 
@@ -273,7 +270,7 @@ var script = {
 	},
 	methods: {
 		t(key) {
-			return renderText(
+			return PrivacyPolicyText.renderText(
 				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
 			)
 		},

@@ -178,12 +178,7 @@
 	</section>
 </template>
 <script>
-import {
-	curlyWrapSingular,
-	curlyWrapPlural,
-	processors as defaultProcessors,
-	renderText,
-} from '@webflorist/privacy-policy-text'
+import PrivacyPolicyText from '@webflorist/privacy-policy-text'
 import CookieDetails from './CookieDetails.vue'
 
 export default {
@@ -234,7 +229,9 @@ export default {
 	},
 	created() {
 		// Get messages
-		this.messages = this.singular ? curlyWrapSingular : curlyWrapPlural
+		this.messages = this.singular
+			? PrivacyPolicyText.curlyWrapSingular
+			: PrivacyPolicyText.curlyWrapPlural
 
 		// Throw error, if stated locale is not supported.
 		if (!(this.locale in this.messages)) {
@@ -245,7 +242,7 @@ export default {
 
 		// Merge custom processors with default ones.
 		this.allProcessors = {
-			...defaultProcessors,
+			...PrivacyPolicyText.processors,
 			...this.processors,
 		}
 
@@ -313,7 +310,7 @@ export default {
 	},
 	methods: {
 		t(key) {
-			return renderText(
+			return PrivacyPolicyText.renderText(
 				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
 			)
 		},

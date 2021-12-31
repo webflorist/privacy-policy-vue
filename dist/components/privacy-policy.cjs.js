@@ -1,7 +1,14 @@
 'use strict'
 
-var privacyPolicyText = require('@webflorist/privacy-policy-text')
+var PrivacyPolicyText = require('@webflorist/privacy-policy-text')
 var vue = require('vue')
+
+function _interopDefaultLegacy(e) {
+	return e && typeof e === 'object' && 'default' in e ? e : { default: e }
+}
+
+var PrivacyPolicyText__default =
+	/*#__PURE__*/ _interopDefaultLegacy(PrivacyPolicyText)
 
 var script$1 = {
 	name: 'CookieDetails',
@@ -180,8 +187,8 @@ var script = {
 	created() {
 		// Get messages
 		this.messages = this.singular
-			? privacyPolicyText.curlyWrapSingular
-			: privacyPolicyText.curlyWrapPlural
+			? PrivacyPolicyText__default['default'].curlyWrapSingular
+			: PrivacyPolicyText__default['default'].curlyWrapPlural
 
 		// Throw error, if stated locale is not supported.
 		if (!(this.locale in this.messages)) {
@@ -192,7 +199,7 @@ var script = {
 
 		// Merge custom processors with default ones.
 		this.allProcessors = {
-			...privacyPolicyText.processors,
+			...PrivacyPolicyText__default['default'].processors,
 			...this.processors,
 		}
 
@@ -260,7 +267,7 @@ var script = {
 	},
 	methods: {
 		t(key) {
-			return privacyPolicyText.renderText(
+			return PrivacyPolicyText__default['default'].renderText(
 				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
 			)
 		},
