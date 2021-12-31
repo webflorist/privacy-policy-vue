@@ -1,5 +1,9 @@
 # Release Notes
 
+## [v1.1.1 (2021-12-31)](https://github.com/webflorist/privacy-policy-text/compare/v1.1.0...v1.1.1)
+
+- FIX problem with imports (bba5913)
+
 ## [v1.1.0 (2021-12-31)](https://github.com/webflorist/privacy-policy-text/compare/v1.0.4...v1.1.0)
 
 - ADD support for multiple processors for a single data-process (822386b)
