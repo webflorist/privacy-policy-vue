@@ -1,25 +1,3 @@
-<script>
-export default {
-	props: {
-		cookie: {
-			type: Object,
-			required: true,
-		},
-		processors: {
-			type: Object,
-			required: true,
-		},
-		type: {
-			type: String, // first_party | third_party
-			required: true,
-		},
-		t: {
-			type: [Function],
-			required: true,
-		},
-	},
-}
-</script>
 <template>
 	<section>
 		<h4>{{ cookie.name }}</h4>
@@ -47,3 +25,26 @@ export default {
 		</dl>
 	</section>
 </template>
+<script>
+export default {
+	name: 'CookieDetails',
+	props: {
+		cookie: {
+			type: Object,
+			required: true,
+		},
+		processors: {
+			type: Object,
+			required: true,
+		},
+		type: {
+			type: String, // first_party | third_party
+			required: true,
+		},
+		t: {
+			type: [Function],
+			required: true,
+		},
+	},
+}
+</script>

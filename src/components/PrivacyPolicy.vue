@@ -1,141 +1,3 @@
-<script>
-import {
-	curlyWrapSingular,
-	curlyWrapPlural,
-	processors as defaultProcessors,
-	renderText,
-} from '@webflorist/privacy-policy-text'
-import CookieDetails from './CookieDetails.vue'
-
-export default {
-	components: {
-		CookieDetails,
-	},
-	props: {
-		locale: {
-			type: String,
-			required: true,
-		},
-		singular: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		privacyEmail: {
-			type: String,
-			required: true,
-		},
-		cookies: {
-			type: [Object, Boolean],
-			required: true,
-		},
-		processors: {
-			type: Object,
-			required: false,
-			default: () => {
-				return {}
-			},
-		},
-		dataProcessing: {
-			type: Object,
-			required: false,
-			default: () => {
-				return {}
-			},
-		},
-	},
-	data() {
-		return {
-			allProcessors: {},
-			messages: {},
-			interpolations: {},
-			usedProcessors: {},
-		}
-	},
-	created() {
-		// Get messages
-		this.messages = this.singular ? curlyWrapSingular : curlyWrapPlural
-
-		// Throw error, if stated locale is not supported.
-		if (!(this.locale in this.messages)) {
-			throw new Error(
-				`Package @webflorist/privacy-policy-vue does not support locale "${this.locale}"`
-			)
-		}
-
-		// Merge custom processors with default ones.
-		this.allProcessors = {
-			...defaultProcessors,
-			...this.processors,
-		}
-
-		// Determine used processors and interpolations for translation
-		const interpolations = {
-			privacy_email: this.privacyEmail,
-		}
-		const usedProcessors = {}
-		for (const [processType, process] of Object.entries(this.dataProcessing)) {
-			// Retrieve processor data from allProcessors
-			const processorKey = process.processor
-			const processor = this.allProcessors[processorKey]
-
-			// Create interpolations for translation of texts.
-			interpolations[processType + '_processor_id'] = processorKey
-			interpolations[processType + '_processor_name'] = processor.name
-			interpolations[processType + '_service'] = process.service
-
-			// Put processor in usedProcessors
-			if (!usedProcessors[processorKey]) {
-				usedProcessors[processorKey] = processor
-			}
-
-			// Add data purpose to processor.
-			if (!usedProcessors[processorKey].purposes) {
-				usedProcessors[processorKey].purposes = []
-			}
-			usedProcessors[processorKey].purposes = [
-				...new Set([...usedProcessors[processorKey].purposes, processType]),
-			]
-
-			// Add data categories to processor.
-			if (!usedProcessors[processorKey].data_categories) {
-				usedProcessors[processorKey].data_categories = []
-			}
-			usedProcessors[processorKey].data_categories = [
-				...new Set([
-					...usedProcessors[processorKey].data_categories,
-					...process.data_categories,
-				]),
-			]
-		}
-		this.usedProcessors = usedProcessors
-		this.interpolations = interpolations
-	},
-	methods: {
-		t(key) {
-			return renderText(
-				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
-			)
-		},
-		interpolate(text) {
-			for (const [replaceThis, withThis] of Object.entries(
-				this.interpolations
-			)) {
-				text = text.replaceAll(`{${replaceThis}}`, withThis)
-			}
-			return text
-		},
-		accessNestedProp(path, obj) {
-			return path.split('.').reduce((p, c) => (p && p[c]) || null, obj)
-		},
-	},
-	computed: {
-		cookieTypes() {
-			return Object.keys(this.cookies) || []
-		},
-	},
-}
-</script>
 <template>
 	<section>
 		<p v-html="t('intro_content.p1')" />
@@ -315,3 +177,142 @@ export default {
 		</section>
 	</section>
 </template>
+<script>
+import {
+	curlyWrapSingular,
+	curlyWrapPlural,
+	processors as defaultProcessors,
+	renderText,
+} from '@webflorist/privacy-policy-text'
+import CookieDetails from './CookieDetails.vue'
+
+export default {
+	name: 'PrivacyPolicy',
+	components: {
+		CookieDetails,
+	},
+	props: {
+		locale: {
+			type: String,
+			required: true,
+		},
+		singular: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		privacyEmail: {
+			type: String,
+			required: true,
+		},
+		cookies: {
+			type: [Object, Boolean],
+			required: true,
+		},
+		processors: {
+			type: Object,
+			required: false,
+			default: () => {
+				return {}
+			},
+		},
+		dataProcessing: {
+			type: Object,
+			required: false,
+			default: () => {
+				return {}
+			},
+		},
+	},
+	data() {
+		return {
+			allProcessors: {},
+			messages: {},
+			interpolations: {},
+			usedProcessors: {},
+		}
+	},
+	created() {
+		// Get messages
+		this.messages = this.singular ? curlyWrapSingular : curlyWrapPlural
+
+		// Throw error, if stated locale is not supported.
+		if (!(this.locale in this.messages)) {
+			throw new Error(
+				`Package @webflorist/privacy-policy-vue does not support locale "${this.locale}"`
+			)
+		}
+
+		// Merge custom processors with default ones.
+		this.allProcessors = {
+			...defaultProcessors,
+			...this.processors,
+		}
+
+		// Determine used processors and interpolations for translation
+		const interpolations = {
+			privacy_email: this.privacyEmail,
+		}
+		const usedProcessors = {}
+		for (const [processType, process] of Object.entries(this.dataProcessing)) {
+			// Retrieve processor data from allProcessors
+			const processorKey = process.processor
+			const processor = this.allProcessors[processorKey]
+
+			// Create interpolations for translation of texts.
+			interpolations[processType + '_processor_id'] = processorKey
+			interpolations[processType + '_processor_name'] = processor.name
+			interpolations[processType + '_service'] = process.service
+
+			// Put processor in usedProcessors
+			if (!usedProcessors[processorKey]) {
+				usedProcessors[processorKey] = processor
+			}
+
+			// Add data purpose to processor.
+			if (!usedProcessors[processorKey].purposes) {
+				usedProcessors[processorKey].purposes = []
+			}
+			usedProcessors[processorKey].purposes = [
+				...new Set([...usedProcessors[processorKey].purposes, processType]),
+			]
+
+			// Add data categories to processor.
+			if (!usedProcessors[processorKey].data_categories) {
+				usedProcessors[processorKey].data_categories = []
+			}
+			usedProcessors[processorKey].data_categories = [
+				...new Set([
+					...usedProcessors[processorKey].data_categories,
+					...process.data_categories,
+				]),
+			]
+		}
+		this.usedProcessors = usedProcessors
+		this.interpolations = interpolations
+	},
+	methods: {
+		t(key) {
+			return renderText(
+				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
+			)
+		},
+		interpolate(text) {
+			for (const [replaceThis, withThis] of Object.entries(
+				this.interpolations
+			)) {
+				text = text.replaceAll(`{${replaceThis}}`, withThis)
+			}
+			return text
+		},
+		accessNestedProp(path, obj) {
+			return path.split('.').reduce((p, c) => (p && p[c]) || null, obj)
+		},
+	},
+	computed: {
+		cookieTypes() {
+			return Object.keys(this.cookies) || []
+		},
+	},
+}
+</script>
