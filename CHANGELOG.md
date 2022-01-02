@@ -1,5 +1,14 @@
 # Release Notes
 
+## [v1.1.2 (2022-01-02)](https://github.com/webflorist/privacy-policy-text/compare/v1.1.1...v1.1.2)
+
+- LINTFIX (17f8c3e)
+- LINTFIX readme (aec0106)
+- ADD lintfix to build command (dac13cf)
+- FIX typo in readme (e6ab332)
+- ADD data controller section and property and remove privacy-email property (7437e1b)
+- COMPLETE readme (b886f8c)
+
 ## [v1.1.1 (2021-12-31)](https://github.com/webflorist/privacy-policy-text/compare/v1.1.0...v1.1.1)
 
 - FIX problem with imports (bba5913)
