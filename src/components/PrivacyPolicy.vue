@@ -20,7 +20,6 @@
 				<li v-html="t('gdpr_rights.content.ul1.li6')" />
 				<li v-html="t('gdpr_rights.content.ul1.li7')" />
 			</ul>
-			<p v-html="t('gdpr_rights.content.p2')" />
 
 			<slot name="gdpr_rights_end"></slot>
 		</section>
@@ -32,11 +31,21 @@
 
 			<p v-html="t('data_controller.content.p1')" />
 			<address>
-				<div v-if="dataController.organisation">{{dataController.organisation}}</div>
-				<div v-if="dataController.name">{{dataController.name}}</div>
-				<div v-if="dataController.address">{{dataController.address}}</div>
-				<div v-if="dataController.email"><a :href="'mailto:'+dataController.email">{{dataController.email}}</a></div>
-				<div v-if="dataController.phone"><a :href="'phone:'+dataController.phone">{{dataController.email}}</a></div>
+				<div v-if="dataController.organisation">
+					{{ dataController.organisation }}
+				</div>
+				<div v-if="dataController.name">{{ dataController.name }}</div>
+				<div v-if="dataController.address">{{ dataController.address }}</div>
+				<div v-if="dataController.email">
+					<a :href="'mailto:' + dataController.email">{{
+						dataController.email
+					}}</a>
+				</div>
+				<div v-if="dataController.phone">
+					<a :href="'tel:' + dataController.phone">{{
+						dataController.phone
+					}}</a>
+				</div>
 			</address>
 
 			<slot name="data_controller_end"></slot>
@@ -240,10 +249,10 @@ export default {
 					name: null,
 					address: null,
 					email: null,
-					phone: null
+					phone: null,
 				}
-			}
-		}
+			},
+		},
 	},
 	data() {
 		return {
