@@ -25,7 +25,7 @@ This package contains a **Vue (v2/v3)** component providing an **open source** p
 
 ## Demo
 
-An demo application with the texts included in this package is avaliable at:  
+An demo application using this package is avaliable at:  
 <https://privacy-policy-vue-demo.netlify.app/>
 
 ## Features
