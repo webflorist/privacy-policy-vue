@@ -33,7 +33,7 @@
 		"./sfc": "./src/components/PrivacyPolicy.vue"
 	},
 	"scripts": {
-		"build": "npx rollup -c",
+		"build": "npx rollup -c && yarn lintfix",
 		"release": "./release.sh",
 		"lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
 		"lintfix:js": "yarn lint:js --fix",
