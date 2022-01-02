@@ -189,11 +189,11 @@ Supported types of processes are:
 The properties of a process can be:
 
 - `processor`: String (mandatory)  
-The key of the processor providing this processing (either one of the [included ones](https://github.com/webflorist/privacy-policy-text/blob/main/dist/json/processors.json) or one stated via the [processors property](#processors-object-optional))
+  The key of the processor providing this processing (either one of the [included ones](https://github.com/webflorist/privacy-policy-text/blob/main/dist/json/processors.json) or one stated via the [processors property](#processors-object-optional))
 - `service`: String (optional)  
-Name of the service providing this processing (e.g. `Google Analytics` or `Google Maps`)
+  Name of the service providing this processing (e.g. `Google Analytics` or `Google Maps`)
 - `data_categories`: Array (mandatory)  
-Array of data categories processed by this process. Supported values are:
+  Array of data categories processed by this process. Supported values are:
   - `inventory_data`
   - `usage_data`
   - `geo_data`
@@ -234,25 +234,25 @@ An object describing the cookies used by your site. They are devided into first 
 Each cookie is described as an object with the following possible properties:
 
 - `name`: String (mandatory)  
-The name of the cookie
+  The name of the cookie
 - `purpose`: String (mandatory)  
-The key of the cookie purpose. Can be one of the following:
+  The key of the cookie purpose. Can be one of the following:
   - `session`  
-  Session cookie
+    Session cookie
   - `xsrf`  
-  Cookie to prevent "Cross-Site Request Forgery" attacks
+    Cookie to prevent "Cross-Site Request Forgery" attacks
   - `hide_alert`  
-  Cookie to prevent displaying the cookie dialog again after hiding it
+    Cookie to prevent displaying the cookie dialog again after hiding it
   - `all_choices`  
-  Cookie storing the choices regarding various cookies displayed in the cookie dialog
+    Cookie storing the choices regarding various cookies displayed in the cookie dialog
   - `analytics_choice`  
-  Cookie storing the choice regarding the usage of web analytics in the cookie dialog
+    Cookie storing the choice regarding the usage of web analytics in the cookie dialog
   - `maps_choice`  
-  Cookie storing the choice regarding the usage of interactive maps
+    Cookie storing the choice regarding the usage of interactive maps
   - `analytics_third_party`  
-  Cookies written by the web analytics tool
+    Cookies written by the web analytics tool
   - `maps_third_party`  
-  Cookies set on displaying interactive maps.
+    Cookies set on displaying interactive maps.
 - `written_on`: String (mandatory)  
   When the cookie is created. Can be one of the following:
   - `every_visit`: Written on every visit
@@ -268,7 +268,7 @@ The key of the cookie purpose. Can be one of the following:
   - `1_minute`
   - `various`
 - `processor`: String (mandatory with third party cookies)
-The key of the processor providing this processing (either one of the [included ones](https://github.com/webflorist/privacy-policy-text/blob/main/dist/json/processors.json) or one stated via the [processors property](#processors-object-optional))
+  The key of the processor providing this processing (either one of the [included ones](https://github.com/webflorist/privacy-policy-text/blob/main/dist/json/processors.json) or one stated via the [processors property](#processors-object-optional))
 
 Here is an example of the cookie property:
 
@@ -304,13 +304,13 @@ Several processors are [already included](https://github.com/webflorist/privacy-
 State your own ones in the processors property in an object with the shorthand-key of the processor as the property name and it's info as a value-object with the following properties:
 
 - `name` String (mandatory)  
-Company name
+  Company name
 - `address` String (mandatory)  
-Full address of the company
+  Full address of the company
 - `privacy_policy` String (mandatory)
-Link to the processors privacy policy
+  Link to the processors privacy policy
 - `privacy_shield` String (optional)  
-Link to the [privacy shield](https://www.privacyshield.gov) entry of the processor.
+  Link to the [privacy shield](https://www.privacyshield.gov) entry of the processor.
 
 Here is and example:
 
