@@ -162,7 +162,7 @@ Contact info for the data controller. The object can have the following properti
 
 ```js
 {
-  company: 'Acme Corporation',
+  organisation: 'Acme Corporation',
   name: 'John Doe',
   address: 'Acme Street 1, 123456 Acme City, USA',
   email: 'privacy@example.com',
