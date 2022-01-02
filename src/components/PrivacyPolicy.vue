@@ -26,6 +26,23 @@
 		</section>
 
 		<section>
+			<h2>{{ t('data_controller.title') }}</h2>
+
+			<slot name="data_controller_start"></slot>
+
+			<p v-html="t('data_controller.content.p1')" />
+			<address>
+				<div v-if="dataController.organisation">{{dataController.organisation}}</div>
+				<div v-if="dataController.name">{{dataController.name}}</div>
+				<div v-if="dataController.address">{{dataController.address}}</div>
+				<div v-if="dataController.email"><a :href="'mailto:'+dataController.email">{{dataController.email}}</a></div>
+				<div v-if="dataController.phone"><a :href="'phone:'+dataController.phone">{{dataController.email}}</a></div>
+			</address>
+
+			<slot name="data_controller_end"></slot>
+		</section>
+
+		<section>
 			<h2>{{ t('security.title') }}</h2>
 
 			<slot name="security_start"></slot>
@@ -196,10 +213,6 @@ export default {
 			required: false,
 			default: false,
 		},
-		privacyEmail: {
-			type: String,
-			required: true,
-		},
 		cookies: {
 			type: [Object, Boolean],
 			required: true,
@@ -218,6 +231,19 @@ export default {
 				return {}
 			},
 		},
+		dataController: {
+			type: Object,
+			required: true,
+			default: () => {
+				return {
+					organisation: null,
+					name: null,
+					address: null,
+					email: null,
+					phone: null
+				}
+			}
+		}
 	},
 	data() {
 		return {
@@ -247,9 +273,7 @@ export default {
 		}
 
 		// Determine used processors and interpolations for translation
-		const interpolations = {
-			privacy_email: this.privacyEmail,
-		}
+		const interpolations = {}
 		const usedProcessors = {}
 		for (const [processType, process] of Object.entries(this.dataProcessing)) {
 			// Retrieve processor data from allProcessors
