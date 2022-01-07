@@ -361,4 +361,4 @@ The included text _should_ be suitable for a GDPR-compliant website.
 
 ## License
 
-This package is open-sourced software licensed under the [MIT license](https://github.com/laravel/framework/blob/8.x/LICENSE.md).
+This package is open-sourced software licensed under the [MIT license](https://github.com/webflorist/privacy-policy-vue/blob/main/LICENSE.md).
