@@ -1,6 +1,7 @@
 # A Privacy Policy Component for Vue Applications<!-- omit in toc -->
 
 [![npm version](https://img.shields.io/npm/v/@webflorist/privacy-policy-vue.svg)](https://www.npmjs.com/package/@webflorist/privacy-policy-vue)
+[![license](https://img.shields.io/github/license/webflorist/privacy-policy-vue)](https://github.com/webflorist/privacy-policy-vue/blob/main/LICENSE.md)
 
 This package contains a **Vue (v2/v3)** component providing an **open source** privacy policy available in **german** and **english**.
 
@@ -17,7 +18,7 @@ This package contains a **Vue (v2/v3)** component providing an **open source** p
     - [`data-controller`: Object (mandatory)](#data-controller-object-mandatory)
     - [`singular`: Boolean (optional)](#singular-boolean-optional)
     - [`data-processing`: Object (optional)](#data-processing-object-optional)
-    - [`cookies`: Object (optional)](#cookies-object-optional)
+    - [`cookies`: Object|false (required)](#cookies-objectfalse-required)
     - [`processors`: Object (optional)](#processors-object-optional)
   - [Named Slots](#named-slots)
 - [Disclaimer](#disclaimer)
@@ -50,6 +51,7 @@ An demo application using this package is avaliable at:
     - Interactive maps
     - Sending of emails (e.g. contact forms)
   - Disclaimer regarding **outgoing links**
+  - Listing of all used **processors**
 
 ## Requirements
 
@@ -81,7 +83,7 @@ An example of the usage of this package (in Vue SFC `<script setup>` syntax) for
 import PrivacyPolicy from '@webflorist/privacy-policy-vue'
 
 const dataController = {
-  company: 'Acme Corporation',
+  organisation: 'Acme Corporation',
   name: 'John Doe',
   address: 'Acme Street 1, 123456 Acme City, USA',
   email: 'privacy@example.com',
@@ -227,9 +229,13 @@ Here is an example for a full `data-processing` object:
 }
 ```
 
-#### `cookies`: Object (optional)
+#### `cookies`: Object|false (required)
 
-An object describing the cookies used by your site. They are devided into first party cookies and third party ones, listed as arrays of the `first_party` and `third_party` properties of the `cookies` object.
+This property describes the cookies used by your site.
+
+If your site uses no cookies at all, simply set this to `false`.
+
+If not, divide the used cookies into first party cookies and third party ones, and list them as arrays of the `first_party` and `third_party` properties of the `cookies` object.
 
 Each cookie is described as an object with the following possible properties:
 
@@ -237,22 +243,14 @@ Each cookie is described as an object with the following possible properties:
   The name of the cookie
 - `purpose`: String (mandatory)  
   The key of the cookie purpose. Can be one of the following:
-  - `session`  
-    Session cookie
-  - `xsrf`  
-    Cookie to prevent "Cross-Site Request Forgery" attacks
-  - `hide_alert`  
-    Cookie to prevent displaying the cookie dialog again after hiding it
-  - `all_choices`  
-    Cookie storing the choices regarding various cookies displayed in the cookie dialog
-  - `analytics_choice`  
-    Cookie storing the choice regarding the usage of web analytics in the cookie dialog
-  - `maps_choice`  
-    Cookie storing the choice regarding the usage of interactive maps
-  - `analytics_third_party`  
-    Cookies written by the web analytics tool
-  - `maps_third_party`  
-    Cookies set on displaying interactive maps.
+  - `session`: Session cookie
+  - `xsrf`: Cookie to prevent "Cross-Site Request Forgery" attacks
+  - `hide_alert`: Cookie to prevent displaying the cookie dialog again after hiding it
+  - `all_choices`: Cookie storing the choices regarding various cookies displayed in the cookie dialog
+  - `analytics_choice`: Cookie storing the choice regarding the usage of web analytics in the cookie dialog
+  - `maps_choice`: Cookie storing the choice regarding the usage of interactive maps
+  - `analytics_third_party`: Cookies written by the web analytics tool
+  - `maps_third_party`: Cookies set on displaying interactive maps.
 - `written_on`: String (mandatory)  
   When the cookie is created. Can be one of the following:
   - `every_visit`: Written on every visit
