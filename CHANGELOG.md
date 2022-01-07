@@ -1,5 +1,11 @@
 # Release Notes
 
+## [v1.1.3 (2022-01-07)](https://github.com/webflorist/privacy-policy-text/compare/v1.1.2...v1.1.3)
+
+- fix(html): change section tag to p in outgoing-links section (4b3ba1b)
+- docs(README): add license badge (f22507c)
+- MINOR fix in readme (fccf2d5)
+
 ## [v1.1.2 (2022-01-02)](https://github.com/webflorist/privacy-policy-text/compare/v1.1.1...v1.1.2)
 
 - LINTFIX (17f8c3e)
