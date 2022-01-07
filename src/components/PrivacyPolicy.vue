@@ -144,7 +144,7 @@
 		<section>
 			<h2>{{ t('outgoing_links.title') }}</h2>
 			<slot name="outgoing_links_start"></slot>
-			<section v-html="t('outgoing_links.content.p1')" />
+			<p v-html="t('outgoing_links.content.p1')" />
 			<slot name="outgoing_links_end"></slot>
 		</section>
 
@@ -196,6 +196,18 @@
 							>{{ processor.privacy_policy }}</a
 						>
 					</dd>
+
+					<template v-if="processor.privacy_shield">
+						<dt>Privacy Shield</dt>
+						<dd>
+							<a
+								:href="processor.privacy_shield"
+								target="_blank"
+								rel="noopener nofollower"
+								>{{ processor.privacy_shield }}</a
+							>
+						</dd>
+					</template>
 				</dl>
 			</section>
 
@@ -285,8 +297,6 @@ export default {
 		const interpolations = {}
 		const usedProcessors = {}
 		for (const [processType, process] of Object.entries(this.dataProcessing)) {
-			// Retrieve processor data from allProcessors
-
 			const processors = Array.isArray(process.processor)
 				? process.processor
 				: [process.processor]
@@ -305,12 +315,9 @@ export default {
 				)
 			}
 			interpolations[processType + '_processor'] = processorLinks.join(', ')
+
 			interpolations[processType + '_service'] =
 				process.service || this.t('data_processing.' + processType + '.title')
-
-			if (process.service) {
-				interpolations[processType + '_service'] = process.service
-			}
 
 			// Put processors in usedProcessors
 			for (const processorKey of processors) {

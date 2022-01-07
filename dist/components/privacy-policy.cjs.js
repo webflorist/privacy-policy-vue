@@ -216,8 +216,6 @@ var script = {
 		const interpolations = {}
 		const usedProcessors = {}
 		for (const [processType, process] of Object.entries(this.dataProcessing)) {
-			// Retrieve processor data from allProcessors
-
 			const processors = Array.isArray(process.processor)
 				? process.processor
 				: [process.processor]
@@ -236,12 +234,9 @@ var script = {
 				)
 			}
 			interpolations[processType + '_processor'] = processorLinks.join(', ')
+
 			interpolations[processType + '_service'] =
 				process.service || this.t('data_processing.' + processType + '.title')
-
-			if (process.service) {
-				interpolations[processType + '_service'] = process.service
-			}
 
 			// Put processors in usedProcessors
 			for (const processorKey of processors) {
@@ -356,6 +351,13 @@ const _hoisted_44 = ['id']
 const _hoisted_45 = ['href']
 const _hoisted_46 = /*#__PURE__*/ vue.createTextVNode(', ')
 const _hoisted_47 = ['href']
+const _hoisted_48 = /*#__PURE__*/ vue.createElementVNode(
+	'dt',
+	null,
+	'Privacy Shield',
+	-1 /* HOISTED */
+)
+const _hoisted_49 = ['href']
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_CookieDetails = vue.resolveComponent('CookieDetails')
@@ -908,7 +910,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 				),
 				vue.renderSlot(_ctx.$slots, 'outgoing_links_start'),
 				vue.createElementVNode(
-					'section',
+					'p',
 					{
 						innerHTML: $options.t('outgoing_links.content.p1'),
 					},
@@ -1051,6 +1053,30 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 												_hoisted_47
 											),
 										]),
+										processor.privacy_shield
+											? (vue.openBlock(),
+											  vue.createElementBlock(
+													vue.Fragment,
+													{ key: 0 },
+													[
+														_hoisted_48,
+														vue.createElementVNode('dd', null, [
+															vue.createElementVNode(
+																'a',
+																{
+																	href: processor.privacy_shield,
+																	target: '_blank',
+																	rel: 'noopener nofollower',
+																},
+																vue.toDisplayString(processor.privacy_shield),
+																9 /* TEXT, PROPS */,
+																_hoisted_49
+															),
+														]),
+													],
+													64 /* STABLE_FRAGMENT */
+											  ))
+											: vue.createCommentVNode('v-if', true),
 									]),
 								],
 								8 /* PROPS */,
