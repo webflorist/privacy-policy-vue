@@ -51,7 +51,6 @@
 		"eslint-plugin-prettier": "^4.0.0",
 		"eslint-plugin-vue": "^8.2.0",
 		"prettier": "2.5.1",
-		"prettier-plugin-sh": "^0.8.1",
 		"rollup": "^2.64.0",
 		"rollup-plugin-vue": "^6.0.0",
 		"semantic-release": "^18.0.1",
