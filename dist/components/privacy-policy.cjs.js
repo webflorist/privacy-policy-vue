@@ -186,92 +186,15 @@ var script = {
 		},
 	},
 	data() {
-		return {
-			allProcessors: {},
-			messages: {},
-			interpolations: {},
-			usedProcessors: {},
-		}
-	},
-	created() {
-		// Get messages
-		this.messages = this.singular
-			? PrivacyPolicyText__default['default'].curlyWrapSingular
-			: PrivacyPolicyText__default['default'].curlyWrapPlural
-
-		// Throw error, if stated locale is not supported.
-		if (!(this.locale in this.messages)) {
-			throw new Error(
-				`Package @webflorist/privacy-policy-vue does not support locale "${this.locale}"`
-			)
-		}
-
-		// Merge custom processors with default ones.
-		this.allProcessors = {
-			...PrivacyPolicyText__default['default'].processors,
-			...this.processors,
-		}
-
-		// Determine used processors and interpolations for translation
-		const interpolations = {}
-		const usedProcessors = {}
-		for (const [processType, process] of Object.entries(this.dataProcessing)) {
-			const processors = Array.isArray(process.processor)
-				? process.processor
-				: [process.processor]
-
-			// Create interpolations for translation of texts.
-			const processorLinks = []
-			for (const processorKey of processors) {
-				if (!this.allProcessors[processorKey]) {
-					throw new Error(
-						`@webflorist/privacy-policy-vue: Processor "${processorKey}" used for data-processing "${processType}" not found in processor-list. Please state processor details via the "processors" property.`
-					)
-				}
-				const processorName = this.allProcessors[processorKey].name
-				processorLinks.push(
-					'<a href="#processor-' + processorKey + '">' + processorName + '</a>'
-				)
-			}
-			interpolations[processType + '_processor'] = processorLinks.join(', ')
-
-			interpolations[processType + '_service'] =
-				process.service || this.t('data_processing.' + processType + '.title')
-
-			// Put processors in usedProcessors
-			for (const processorKey of processors) {
-				if (!usedProcessors[processorKey]) {
-					usedProcessors[processorKey] = this.allProcessors[processorKey]
-				}
-
-				// Add data purpose to processor.
-				if (!usedProcessors[processorKey].purposes) {
-					usedProcessors[processorKey].purposes = []
-				}
-				usedProcessors[processorKey].purposes = [
-					...new Set([...usedProcessors[processorKey].purposes, processType]),
-				]
-
-				// Add data categories to processor.
-				if (!usedProcessors[processorKey].data_categories) {
-					usedProcessors[processorKey].data_categories = []
-				}
-				usedProcessors[processorKey].data_categories = [
-					...new Set([
-						...usedProcessors[processorKey].data_categories,
-						...process.data_categories,
-					]),
-				]
-			}
-		}
-		this.usedProcessors = usedProcessors
-		this.interpolations = interpolations
+		return {}
 	},
 	methods: {
-		t(key) {
-			return PrivacyPolicyText__default['default'].renderText(
-				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
-			)
+		t(key, interpolate = true) {
+			let text = this.accessNestedProp(key, this.messages[this.locale])
+			if (interpolate) {
+				text = this.interpolate(text)
+			}
+			return PrivacyPolicyText__default['default'].renderText(text)
 		},
 		interpolate(text) {
 			for (const [replaceThis, withThis] of Object.entries(
@@ -288,6 +211,101 @@ var script = {
 	computed: {
 		cookieTypes() {
 			return Object.keys(this.cookies) || []
+		},
+		messages() {
+			return this.singular
+				? PrivacyPolicyText__default['default'].curlyWrapSingular
+				: PrivacyPolicyText__default['default'].curlyWrapPlural
+		},
+		allProcessors() {
+			return {
+				...PrivacyPolicyText__default['default'].processors,
+				...this.processors,
+			}
+		},
+		usedProcessors() {
+			const usedProcessors = {}
+			for (const [processType, process] of Object.entries(
+				this.dataProcessing
+			)) {
+				const processors = Array.isArray(process.processor)
+					? process.processor
+					: [process.processor]
+
+				// Put processors in usedProcessors
+				for (const processorKey of processors) {
+					if (!usedProcessors[processorKey]) {
+						usedProcessors[processorKey] = this.allProcessors[processorKey]
+					}
+
+					// Add data purpose to processor.
+					if (!usedProcessors[processorKey].purposes) {
+						usedProcessors[processorKey].purposes = []
+					}
+					usedProcessors[processorKey].purposes = [
+						...new Set([...usedProcessors[processorKey].purposes, processType]),
+					]
+
+					// Add data categories to processor.
+					if (!usedProcessors[processorKey].data_categories) {
+						usedProcessors[processorKey].data_categories = []
+					}
+					usedProcessors[processorKey].data_categories = [
+						...new Set([
+							...usedProcessors[processorKey].data_categories,
+							...process.data_categories,
+						]),
+					]
+				}
+			}
+			return usedProcessors
+		},
+		interpolations() {
+			const interpolations = {}
+			for (const [processType, process] of Object.entries(
+				this.dataProcessing
+			)) {
+				const processors = Array.isArray(process.processor)
+					? process.processor
+					: [process.processor]
+
+				// Create interpolations for translation of texts.
+				const processorLinks = []
+				for (const processorKey of processors) {
+					if (!this.allProcessors[processorKey]) {
+						throw new Error(
+							`@webflorist/privacy-policy-vue: Processor "${processorKey}" used for data-processing "${processType}" not found in processor-list. Please state processor details via the "processors" property.`
+						)
+					}
+					const processorName = this.allProcessors[processorKey].name
+					processorLinks.push(
+						'<a href="#processor-' +
+							processorKey +
+							'">' +
+							processorName +
+							'</a>'
+					)
+				}
+				interpolations[processType + '_processor'] = processorLinks.join(', ')
+
+				interpolations[processType + '_service'] =
+					process.service ||
+					this.t('data_processing.' + processType + '.title', false)
+			}
+			return interpolations
+		},
+	},
+	watch: {
+		locale: {
+			handler(newLocale) {
+				// Throw error, if stated locale is not supported.
+				if (!(newLocale in this.messages)) {
+					throw new Error(
+						`Package @webflorist/privacy-policy-vue does not support locale "${newLocale}"`
+					)
+				}
+			},
+			immediate: true,
 		},
 	},
 }
@@ -666,7 +684,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 																		key: key,
 																		cookie: cookie,
 																		t: $options.t,
-																		processors: $data.usedProcessors,
+																		processors: $options.usedProcessors,
 																		type: cookieType,
 																	},
 																	null,
@@ -932,7 +950,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 				vue.createElementBlock(
 					vue.Fragment,
 					null,
-					vue.renderList($data.usedProcessors, (processor, key) => {
+					vue.renderList($options.usedProcessors, (processor, key) => {
 						return (
 							vue.openBlock(),
 							vue.createElementBlock(
