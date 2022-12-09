@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.1.4](https://github.com/webflorist/privacy-policy-vue/compare/v1.1.3...v1.1.4) (2022-01-14)
+
+
+### Bug Fixes
+
+* rollup build process ([0c89d40](https://github.com/webflorist/privacy-policy-vue/commit/0c89d40d0301c61dd0b5af1aff88eb08df50905a))
+
 ## [v1.1.3 (2022-01-07)](https://github.com/webflorist/privacy-policy-text/compare/v1.1.2...v1.1.3)
 
 - fix(html): change section tag to p in outgoing-links section (4b3ba1b)
