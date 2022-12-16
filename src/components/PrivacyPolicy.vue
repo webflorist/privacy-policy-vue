@@ -267,92 +267,15 @@ export default {
 		},
 	},
 	data() {
-		return {
-			allProcessors: {},
-			messages: {},
-			interpolations: {},
-			usedProcessors: {},
-		}
-	},
-	created() {
-		// Get messages
-		this.messages = this.singular
-			? PrivacyPolicyText.curlyWrapSingular
-			: PrivacyPolicyText.curlyWrapPlural
-
-		// Throw error, if stated locale is not supported.
-		if (!(this.locale in this.messages)) {
-			throw new Error(
-				`Package @webflorist/privacy-policy-vue does not support locale "${this.locale}"`
-			)
-		}
-
-		// Merge custom processors with default ones.
-		this.allProcessors = {
-			...PrivacyPolicyText.processors,
-			...this.processors,
-		}
-
-		// Determine used processors and interpolations for translation
-		const interpolations = {}
-		const usedProcessors = {}
-		for (const [processType, process] of Object.entries(this.dataProcessing)) {
-			const processors = Array.isArray(process.processor)
-				? process.processor
-				: [process.processor]
-
-			// Create interpolations for translation of texts.
-			const processorLinks = []
-			for (const processorKey of processors) {
-				if (!this.allProcessors[processorKey]) {
-					throw new Error(
-						`@webflorist/privacy-policy-vue: Processor "${processorKey}" used for data-processing "${processType}" not found in processor-list. Please state processor details via the "processors" property.`
-					)
-				}
-				const processorName = this.allProcessors[processorKey].name
-				processorLinks.push(
-					'<a href="#processor-' + processorKey + '">' + processorName + '</a>'
-				)
-			}
-			interpolations[processType + '_processor'] = processorLinks.join(', ')
-
-			interpolations[processType + '_service'] =
-				process.service || this.t('data_processing.' + processType + '.title')
-
-			// Put processors in usedProcessors
-			for (const processorKey of processors) {
-				if (!usedProcessors[processorKey]) {
-					usedProcessors[processorKey] = this.allProcessors[processorKey]
-				}
-
-				// Add data purpose to processor.
-				if (!usedProcessors[processorKey].purposes) {
-					usedProcessors[processorKey].purposes = []
-				}
-				usedProcessors[processorKey].purposes = [
-					...new Set([...usedProcessors[processorKey].purposes, processType]),
-				]
-
-				// Add data categories to processor.
-				if (!usedProcessors[processorKey].data_categories) {
-					usedProcessors[processorKey].data_categories = []
-				}
-				usedProcessors[processorKey].data_categories = [
-					...new Set([
-						...usedProcessors[processorKey].data_categories,
-						...process.data_categories,
-					]),
-				]
-			}
-		}
-		this.usedProcessors = usedProcessors
-		this.interpolations = interpolations
+		return {}
 	},
 	methods: {
-		t(key) {
-			return PrivacyPolicyText.renderText(
-				this.interpolate(this.accessNestedProp(key, this.messages[this.locale]))
-			)
+		t(key, interpolate = true) {
+			let text = this.accessNestedProp(key, this.messages[this.locale])
+			if (interpolate) {
+				text = this.interpolate(text)
+			}
+			return PrivacyPolicyText.renderText(text)
 		},
 		interpolate(text) {
 			for (const [replaceThis, withThis] of Object.entries(
@@ -369,6 +292,101 @@ export default {
 	computed: {
 		cookieTypes() {
 			return Object.keys(this.cookies) || []
+		},
+		messages() {
+			return this.singular
+				? PrivacyPolicyText.curlyWrapSingular
+				: PrivacyPolicyText.curlyWrapPlural
+		},
+		allProcessors() {
+			return {
+				...PrivacyPolicyText.processors,
+				...this.processors,
+			}
+		},
+		usedProcessors() {
+			const usedProcessors = {}
+			for (const [processType, process] of Object.entries(
+				this.dataProcessing
+			)) {
+				const processors = Array.isArray(process.processor)
+					? process.processor
+					: [process.processor]
+
+				// Put processors in usedProcessors
+				for (const processorKey of processors) {
+					if (!usedProcessors[processorKey]) {
+						usedProcessors[processorKey] = this.allProcessors[processorKey]
+					}
+
+					// Add data purpose to processor.
+					if (!usedProcessors[processorKey].purposes) {
+						usedProcessors[processorKey].purposes = []
+					}
+					usedProcessors[processorKey].purposes = [
+						...new Set([...usedProcessors[processorKey].purposes, processType]),
+					]
+
+					// Add data categories to processor.
+					if (!usedProcessors[processorKey].data_categories) {
+						usedProcessors[processorKey].data_categories = []
+					}
+					usedProcessors[processorKey].data_categories = [
+						...new Set([
+							...usedProcessors[processorKey].data_categories,
+							...process.data_categories,
+						]),
+					]
+				}
+			}
+			return usedProcessors
+		},
+		interpolations() {
+			const interpolations = {}
+			for (const [processType, process] of Object.entries(
+				this.dataProcessing
+			)) {
+				const processors = Array.isArray(process.processor)
+					? process.processor
+					: [process.processor]
+
+				// Create interpolations for translation of texts.
+				const processorLinks = []
+				for (const processorKey of processors) {
+					if (!this.allProcessors[processorKey]) {
+						throw new Error(
+							`@webflorist/privacy-policy-vue: Processor "${processorKey}" used for data-processing "${processType}" not found in processor-list. Please state processor details via the "processors" property.`
+						)
+					}
+					const processorName = this.allProcessors[processorKey].name
+					processorLinks.push(
+						'<a href="#processor-' +
+							processorKey +
+							'">' +
+							processorName +
+							'</a>'
+					)
+				}
+				interpolations[processType + '_processor'] = processorLinks.join(', ')
+
+				interpolations[processType + '_service'] =
+					process.service ||
+					this.t('data_processing.' + processType + '.title', false)
+			}
+			return interpolations
+		},
+	},
+	watch: {
+		locale: {
+			handler(newLocale) {
+				// Throw error, if stated locale is not supported.
+				if (!(newLocale in this.messages)) {
+					throw new Error(
+						`Package @webflorist/privacy-policy-vue does not support locale "${newLocale}"`
+					)
+				}
+			},
+			immediate: true,
 		},
 	},
 }
