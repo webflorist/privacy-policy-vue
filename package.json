@@ -57,7 +57,7 @@
 		"vue": "^3.0.0"
 	},
 	"dependencies": {
-		"@webflorist/privacy-policy-text": "^1.0.0"
+		"@webflorist/privacy-policy-text": "webflorist/privacy-policy-text#develop"
 	},
 	"peerDependencies": {
 		"vue": "^2.0.0 || ^3.0.0"
